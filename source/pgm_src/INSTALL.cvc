@@ -1,0 +1,22 @@
+INSTALLATION NOTES
+
+Shamez Alibhai
+Nov. 17, 1997
+
+Use gcc
+
+Logged onto blowtorch
+Ran make
+cp pgmlogin /net/netra/cvc/mips-sgi-irix5.3/research/bin/
+cp pgmcxconv /net/netra/cvc/mips-sgi-irix5.3/research/bin/
+cp make-kern /net/netra/cvc/mips-sgi-irix5.3/research/bin/
+
+make clean
+
+Logged onto sawhorse
+Ran make
+cp pgmlogin /net/netra/cvc/sparc-sun-sunos4.1/research/bin/
+cp pgmcxconv /net/netra/cvc/sparc-sun-sunos4.1/research/bin/
+cp make-kern /net/netra/cvc/sparc-sun-sunos4.1/research/bin/
+
+make clean

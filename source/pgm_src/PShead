@@ -1,0 +1,74 @@
+% <ndirs> initcoords
+/initcoords {
+ % ndirs
+ 2 mul 
+ % 2*ndirs
+ dup array /x0 exch def
+ dup array /y0 exch def
+ dup array /x1 exch def
+ dup array /y1 exch def
+ % 2*ndirs
+ dup 360 exch div
+ % 2*ndirs 180/ndirs
+ 0 1 3 index 1 sub {
+  % 2*ndirs 180/ndirs i
+  dup 2 index mul
+  % 2*ndirs 180/ndirs i i*180/ndirs
+  dup cos 
+  dup 0.5 add x0 4 index 3 -1 roll put
+  neg 0.5 add x1 3 index 3 -1 roll put
+  % 2*ndirs 180/ndirs i i*180/ndirs
+  sin
+  dup 0.5 add y0 3 index 3 -1 roll put
+  neg 0.5 add y1 2 index 3 -1 roll put
+  % 2*ndirs 180/ndirs i
+  pop
+ } for
+ % 2*ndirs 180/ndirs
+ pop pop
+} bind def
+
+% <conf> setconf
+/setconf {-1 mul 255 add 255 div setgray} bind def
+
+% <x> <y> <dir> coords
+/coords {
+ % x y dir
+ 3 copy
+ % x y dir x y dir
+ dup y0 exch get exch x0 exch get 
+ % x y dir x y y0 x0
+ 4 -1 roll add 
+ % x y dir y y0 x+x0
+ 6 1 roll add 4 1 roll
+ % x+x0 y+y0 x y dir
+ dup y1 exch get exch x1 exch get
+ % x+x0 y+y0 x y y1 x1
+ 4 -1 roll add
+ % x+x0 y+y0 y y1 x+x1
+ 3 1 roll add
+ % x+x0 y+y0 x+x1 y+y1
+} bind def
+
+/edge {
+ % x y dir conf
+ setconf coords
+ % x+x0 y+y0 x+x1 y+y1
+ moveto lineto stroke
+} bind def
+
+/plin {
+ % x y dir conf
+ setconf coords
+ % x+x0 y+y0 x+x1 y+y1
+ moveto lineto stroke
+} bind def
+
+/nlin {
+ % x y dir conf
+ setconf coords
+ % x+x0 y+y0 x+x1 y+y1
+ moveto lineto stroke
+} bind def
+
+0.1 setlinewidth

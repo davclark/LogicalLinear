@@ -1,0 +1,13 @@
+#log in as pdavis (passwd: glow12)
+startx 
+	will bring up the GUI
+	a terminal window pops up as well as a file browser window
+#in the terminal type:
+convert.pl
+	and it will convert any jpg files it finds in INPUT_FILES into 
+	edge-detected postscript files in the EDGE_DETECTED_OUTPUT directory
+
+# for more info:
+man pgmloglin
+	gives you information on commandline parameters for the edge 
+	detection program

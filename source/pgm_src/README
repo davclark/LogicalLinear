@@ -1,0 +1,100 @@
+From leei@ai.sri.comThu Jul 10 17:59:23 1997
+Date: Thu, 10 Jul 1997 14:57:20 -0700
+From: Lee Iverson <leei@ai.sri.com>
+To: Shamez Alibhai <alibhai@cs.yale.edu>
+Cc: zucker-steven@cs.yale.edu
+Subject: Re: Logical/Linear parameters
+
+In message <Pine.SUN.3.91.970710165106.21678B-100000@sawhorse.ai.cs.yale.edu> y
+ou write:
+>
+> Lee,
+>
+> This is Shamez ( a grad student with Steve Zucker).  Steve and I had some
+> questions about the parameters you define in pgmloglin.c.  Could you
+> take the time to provide a short description on the parameters and their
+> interdependence?
+
+A diagram of the operator's receptive field helps:
+
+                          <- X ->
+
+                          -------
+                       ---       ---
+                     --             --    |
+                    /                 \   |
+                    |                 |   Y
+                    \                 /   |
+                     --             --    |
+                       ---       ---
+                          -------
+
+The operator is based on the Gaussian:
+
+	G_s(x) = exp(-0.5/(s*x)^2)
+
+Extending this into two dimensions gives:
+
+	O(x,y) = G_sx(x) * G_sy(y)
+
+where `sx' and `sy' define the extent of the operator in the X and Y
+directions.  Now, tangentially (in the X direction) the operators are
+divided into `xn' tangential components (xn is really an integer
+although for purely interface regions it shows up as a float), where
+the divisions are achieved by multiplying the operator by one or two
+partition functions based on:
+
+	       / 0, if x <= -0.5,
+	p(x) = | 1, if x >= 0.5,
+	       \ exp(-1/(0.5+x))/(exp(-1/(0.5+x))+exp(-1/(0.5-x))), otherwise.
+
+This function is a partitioning building block of degree 1 around x=0.
+In order to actually partition the function we choose
+x_1,...,x_n such that the regions O_1,...,O_n have equal areas:
+
+                        x1  x2  x3
+                         |   |   |
+
+                          -------
+                       ---   |   ---
+                     --  |   |   |  --
+                    /    |   |   |    \
+                    | O1 |O2 | O3| O4 |
+                    \    |   |   |    /
+                     --  |   |   |  --
+                       ---   |   ---
+                          -------
+
+The degree `deg' of these partition is simply a multiplier used when
+partitioning to determine how sharp the transition from one region to
+the next is.  Thus the regions are defined as:
+
+	R1(x,y) = O(x,y)  p(x1-deg*x)
+	R2(x,y) = O(x,y) (p(deg*x-x1) + p(x2-deg*x) - 1)
+	R3(x,y) = O(x,y) (p(deg*x-x2) + p(x3-deg*x) - 1)	
+	R4(x,y) = O(x,y)  p(deg*x-x3)
+
+The two central regions (R2 and R3) have matched stabilizers of the
+form stab*G'_sx(x) attached. These are scaled by the variable `stab.'
+
+The last variable is `sep' which is the offset of the *lateral*
+components used to build up the line or edge specific operators.
+(e.g. the line2 operator consists of four components:
+	L1(y) =  G'_sy(y-sep)
+	L2(y) = -G'_sy(y+sep)
+	L3(y) = -G'''_sy(y-sep)
+	L4(y) =  G'''_sy(y+sep).)
+
+So the variables are in two groups: tangential and lateral.
+
+> float line2_sx   = 2.5; /* T: the sigma of the X Gaussian (length). */
+> float line2_xn   = 4;   /* T: the number of tangential regions. */
+> float line2_deg  = 2.0; /* T: the degree of the tangential partitions. */
+> float line2_stab = 0.2; /* T: the weight of the tangential stabilizers. */
+> float line2_sy   = 1.4; /* L: the sigma of the Y Gaussian (width). */
+> float line2_sep  = 0.8; /* L: the separation of the lateral components. */
+
+-------------------------------------------------------------------------------
+Lee Iverson     		SRI International
+leei@ai.sri.com			333 Ravenswood Ave., Menlo Park CA 94025
+http://www.ai.sri.com/~leei/	(415) 859-3307

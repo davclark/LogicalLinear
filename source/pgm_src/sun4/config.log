@@ -1,0 +1,9 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+ld: Undefined symbol 
+   _expf 
+collect2: ld returned 2 exit status
+ld: Undefined symbol 
+   _sinf 
+collect2: ld returned 2 exit status
